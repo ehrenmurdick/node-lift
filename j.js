@@ -10,15 +10,15 @@ const stubbedFetch = async () => ({
   })
 });
 
-const liftM = f => async (...as) => {
+const lift = f => async (...as) => {
   let vs = await Promise.all(as);
   return f(...vs);
 }
 
-const get = liftM(_.get);
+const get = lift(_.get);
 
 const url = "https://jsonplaceholder.typicode.com/users/"
-const prop = liftM((a, s) => a[s]);
+const prop = lift((a, s) => a[s]);
 
 const getter = s => a => a[s]();
 
@@ -29,22 +29,34 @@ const compose = (...fns) => {
 
 const consUrl = user => url + user
 
-const join_ = liftM((s, ...as) => as.join(s));
+const join = lift((s, ...as) => as.join(s));
 
 const getJson = compose(
-  liftM(getter('json')),
+  lift(getter('json')),
   fetch
 );
 
-const cat = liftM((a, b) => a + b);
+const jsonPlaceholderUser = id => `https://jsonplaceholder.typicode.com/users/${id}`
 
-const consoleLog = liftM(console.log);
+const cat        = lift((...as) => as.reduce((l, r) => l + r));
+const consoleLog = lift(console.log);
+const toJSON     = lift(JSON.stringify);
 
-let user       = getJson("https://jsonplaceholder.typicode.com/users/2")
-let userString = join_('\n',
+let user       = getJson(jsonPlaceholderUser(3));
+let address    = get(user, "address");
+
+let addressString = join(
+  "\n          ",
+  get(address, "street"),
+  get(address, "suite"),
+  get(address, "city"),
+  get(address, "zipcode"),
+);
+
+let userString = join('\n',
   cat("id:       ", get(user, 'id')),
   cat("name:     ", get(user, 'name')),
   cat("username: ", get(user, 'username')),
-  cat("street:   ", get(user, 'address.street'))
+  cat("address:  ", addressString)
 );
 consoleLog(userString);

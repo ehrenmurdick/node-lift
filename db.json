@@ -14,6 +14,15 @@
       "links": {
         "author": "http://localhost:3000/authors/1"
       }
+    },
+    {
+      "id": 102,
+      "title": "Zero to One",
+      "year_published": 2014,
+      "rating": 4.03,
+      "links": {
+        "author": "http://localhost:3000/authors/1"
+      }
     }
   ]
 }

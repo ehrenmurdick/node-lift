@@ -18,9 +18,6 @@ const stubbedFetch = async () => ({
 
 const get = lift(_.get);
 
-const url = "https://jsonplaceholder.typicode.com/users/"
-const prop = lift((a, s) => a[s]);
-
 const getter = s => a => a[s]();
 
 const compose = (...fns) => {
@@ -41,7 +38,19 @@ const cat        = lift((...as) => as.reduce((l, r) => l + r));
 const consoleLog = lift(console.log);
 const toJSON     = lift(JSON.stringify);
 
-let book = getJson("http://localhost:3000/books/101");
-let author = getJson(get(book, "links.author"));
-consoleLog(get(author, "name"));
 
+
+
+
+
+let book = getJson("http://localhost:3000/books/101");
+let book2 = getJson("http://localhost:3000/books/102");
+let author = getJson(get(book, "links.author"));
+
+consoleLog(cat(
+  get(book, 'title'),
+  ' and ',
+  get(book2, 'title'),
+  ' by ',
+  get(author, 'name')
+));

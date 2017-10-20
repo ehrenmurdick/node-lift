@@ -1,4 +1,9 @@
-const fetch = require('node-fetch');
+const lift = f => async (...as) => {
+  let vs = await Promise.all(as);
+  return f(...vs);
+}
+
+const fetch = lift(require('node-fetch'));
 const _ = require('lodash');
 
 const stubbedFetch = async () => ({
@@ -10,10 +15,6 @@ const stubbedFetch = async () => ({
   })
 });
 
-const lift = f => async (...as) => {
-  let vs = await Promise.all(as);
-  return f(...vs);
-}
 
 const get = lift(_.get);
 
@@ -36,27 +37,11 @@ const getJson = compose(
   fetch
 );
 
-const jsonPlaceholderUser = id => `https://jsonplaceholder.typicode.com/users/${id}`
-
 const cat        = lift((...as) => as.reduce((l, r) => l + r));
 const consoleLog = lift(console.log);
 const toJSON     = lift(JSON.stringify);
 
-let user       = getJson(jsonPlaceholderUser(3));
-let address    = get(user, "address");
+let book = getJson("http://localhost:3000/books/101");
+let author = getJson(get(book, "links.author"));
+consoleLog(get(author, "name"));
 
-let addressString = join(
-  "\n          ",
-  get(address, "street"),
-  get(address, "suite"),
-  get(address, "city"),
-  get(address, "zipcode"),
-);
-
-let userString = join('\n',
-  cat("id:       ", get(user, 'id')),
-  cat("name:     ", get(user, 'name')),
-  cat("username: ", get(user, 'username')),
-  cat("address:  ", addressString)
-);
-consoleLog(userString);

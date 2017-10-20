@@ -1,0 +1,19 @@
+{
+  "authors": [
+    {
+      "id": 1,
+      "name": "Peter Thiel"
+    }
+  ],
+  "books": [
+    {
+      "id": 101,
+      "title": "Zero to One",
+      "year_published": 2014,
+      "rating": 4.03,
+      "links": {
+        "author": "http://localhost:3000/authors/1"
+      }
+    }
+  ]
+}
